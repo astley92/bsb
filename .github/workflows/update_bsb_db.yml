@@ -1,0 +1,31 @@
+name: Update BSB DB
+
+on:
+  schedule:
+    - cron: "0 15 1,8,15,22,29 * *" # “At 15:00 on day-of-month 1, 8, 15, 22, and 29.”
+  push:
+    branches:
+      - ba/bsb-db-gha
+
+jobs:
+  update-bsb:
+    runs-on: ubuntu-latest
+    env:
+      AUSPAYNET_SUB_KEY: ${{secrets.AUSPAYNET_SUB_KEY}}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Ruby 
+        uses: ruby/setup-ruby@v1
+        with: 
+          bundler-cache: true
+      
+      - name: Fetch latest contents
+        run: bundle exec rake bsb:sync_bsb_db
+
+      - name: Check changes
+        uses: tj-actions/verify-changed-files@v20
+        with:
+          files: config/bsb_db.json
+
