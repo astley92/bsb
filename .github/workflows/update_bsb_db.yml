@@ -24,8 +24,17 @@ jobs:
       - name: Fetch latest contents
         run: bundle exec rake bsb:sync_bsb_db
 
-      - name: Check changes
+      - name: Check for changes
+        id: check-changes
         uses: tj-actions/verify-changed-files@v20
         with:
           files: config/bsb_db.json
+      
+      - name: Stop if no changes
+        if: steps.check-changes.outputs.files_changed == 'false'
+        run: | 
+          echo 'No changes detected'
+          exit 0
 
+      - name: Log changes
+        run: cat config/latest_update.json
