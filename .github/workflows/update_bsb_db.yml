@@ -1,8 +1,10 @@
 name: Update BSB DB
 
+# on:
+#   schedule:
+#     - cron: "0 15 1,8,15,22,29 * *" # “At 15:00 on day-of-month 1, 8, 15, 22, and 29.”
+
 on:
-  schedule:
-    - cron: "0 15 1,8,15,22,29 * *" # “At 15:00 on day-of-month 1, 8, 15, 22, and 29.”
   push:
     branches:
       - ba/bsb-db-gha
