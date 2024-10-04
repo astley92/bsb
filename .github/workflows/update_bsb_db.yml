@@ -36,5 +36,9 @@ jobs:
           echo 'No changes detected'
           exit 0
 
-      - name: Log changes
-        run: cat config/latest_update.json
+      - name: Remove latest_update file
+        run: rm config/latest_update.json
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+
