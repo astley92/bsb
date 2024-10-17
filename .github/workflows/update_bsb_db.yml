@@ -17,12 +17,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
-      - name: Setup Ruby 
+
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
-        with: 
+        with:
           bundler-cache: true
-      
+
       - name: Fetch latest contents
         run: bundle exec rake bsb:sync_bsb_db
 
@@ -31,16 +31,23 @@ jobs:
         uses: tj-actions/verify-changed-files@v20
         with:
           files: config/bsb_db.json
-      
-      - name: Stop if no changes
+
+      - name: Exit if no changes
         if: steps.check-changes.outputs.files_changed == 'false'
-        run: | 
+        run: |
           echo 'No changes detected'
           exit 0
 
       - name: Remove latest_update file
-        run: rm config/latest_update.json
+        run: rm -f config/latest_update.json
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v7
+        with:
+          brach: update-bsb-db
+          title: Update BSB Database
+          body: |
+            This Pull Request was created automatically by a Github Action.
+            The related workflow file is `.github/workflows/update_bsb_db.yml` and the changes are generated using
+            the rake task `bsb:sync_bsb_db`
 
